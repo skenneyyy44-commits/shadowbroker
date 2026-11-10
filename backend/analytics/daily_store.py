@@ -28,9 +28,11 @@ def utc_today() -> date:
     return datetime.now(timezone.utc).date()
 
 
-def date_id(when: date | datetime | None = None) -> str:
+def date_id(when: date | datetime | str | None = None) -> str:
     if when is None:
         when = utc_today()
+    if isinstance(when, str):
+        when = date.fromisoformat(when)
     if isinstance(when, datetime):
         when = when.date()
     return when.isoformat()
