@@ -5,7 +5,22 @@ import unittest
 from datetime import date, datetime
 from unittest.mock import patch
 
-from analytics.daily_store import DailySnapshot, date_id, load_daily, save_daily
+# Loading the package also starts unrelated analytics imports. Exercise this
+# dependency-free persistence module in isolation.
+import importlib.util
+import sys
+from pathlib import Path
+
+_spec = importlib.util.spec_from_file_location(
+    "daily_store_regression", Path(__file__).resolve().parents[1] / "analytics" / "daily_store.py"
+)
+_store = importlib.util.module_from_spec(_spec)
+sys.modules[_spec.name] = _store
+_spec.loader.exec_module(_store)
+DailySnapshot = _store.DailySnapshot
+date_id = _store.date_id
+load_daily = _store.load_daily
+save_daily = _store.save_daily
 
 
 class DailyStoreDateTests(unittest.TestCase):
