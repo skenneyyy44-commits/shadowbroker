@@ -1,0 +1,19 @@
+name: Daily store regressions
+on:
+  push:
+    paths: ['backend/analytics/daily_store.py', 'backend/tests/test_daily_store_dates.py', '.github/workflows/daily-store-regressions.yml']
+  pull_request:
+    paths: ['backend/analytics/daily_store.py', 'backend/tests/test_daily_store_dates.py', '.github/workflows/daily-store-regressions.yml']
+permissions:
+  contents: read
+jobs:
+  dates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s backend/tests -p test_daily_store_dates.py -v
+        env:
+          PYTHONPATH: backend
